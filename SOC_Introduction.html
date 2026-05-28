@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SOC Introduction — Complete Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0d14;
+    --surface: #111520;
+    --surface2: #161b2e;
+    --border: #1e2840;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --danger: #ef4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --tag-bg: rgba(0, 212, 255, 0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    line-height: 1.7;
+  }
+
+  /* ─── ANIMATED BG ─── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 80% 10%, rgba(0,212,255,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 10% 80%, rgba(124,58,237,0.05) 0%, transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    position: relative; z-index: 1;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    text-align: center;
+    padding: 60px 0 50px;
+    position: relative;
+  }
+
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--tag-bg);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+  }
+
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+
+  h1 {
+    font-size: clamp(2.4rem, 6vw, 3.8rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 0.95rem;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 10px 0 50px;
+  }
+
+  /* ─── SECTION ─── */
+  .section {
+    margin-bottom: 48px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  .section-icon {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .icon-blue  { background: rgba(0,212,255,0.12);  border: 1px solid rgba(0,212,255,0.25); }
+  .icon-purple{ background: rgba(124,58,237,0.12); border: 1px solid rgba(124,58,237,0.3); }
+  .icon-green { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); }
+  .icon-amber { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); }
+  .icon-red   { background: rgba(239,68,68,0.12);  border: 1px solid rgba(239,68,68,0.3); }
+
+  .section-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #fff;
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    display: block;
+  }
+
+  /* ─── CARD ─── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 14px;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card:hover { border-color: rgba(0,212,255,0.2); transform: translateY(-1px); }
+
+  .card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .card:hover::before { opacity: 1; }
+
+  .card p { color: #94a3b8; font-size: 0.92rem; line-height: 1.8; }
+
+  .card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-blue   { background: rgba(0,212,255,0.1);   color: var(--accent); border: 1px solid rgba(0,212,255,0.2); }
+  .badge-green  { background: rgba(16,185,129,0.1);  color: var(--accent3); border: 1px solid rgba(16,185,129,0.2); }
+  .badge-purple { background: rgba(124,58,237,0.1);  color: #a78bfa; border: 1px solid rgba(124,58,237,0.2); }
+  .badge-amber  { background: rgba(245,158,11,0.1);  color: var(--accent4); border: 1px solid rgba(245,158,11,0.2); }
+
+  /* ─── GRID ─── */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media(max-width:600px){ .grid2 { grid-template-columns: 1fr; } }
+
+  /* ─── LIST ─── */
+  ul.check-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+
+  ul.check-list li {
+    display: flex; align-items: flex-start; gap: 10px;
+    color: #94a3b8; font-size: 0.9rem;
+  }
+
+  ul.check-list li::before {
+    content: '▸';
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  ul.check-list li strong { color: #e2e8f0; }
+
+  /* ─── TIER CARDS ─── */
+  .tier {
+    border-left: 3px solid;
+    padding: 18px 20px;
+    background: var(--surface);
+    border-radius: 0 10px 10px 0;
+    margin-bottom: 12px;
+  }
+
+  .tier-l1 { border-color: var(--accent3); }
+  .tier-l2 { border-color: var(--accent); }
+  .tier-l3 { border-color: var(--accent2); }
+
+  .tier-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .tier-l1 .tier-label { color: var(--accent3); }
+  .tier-l2 .tier-label { color: var(--accent); }
+  .tier-l3 .tier-label { color: #a78bfa; }
+
+  .tier h4 { font-size: 1rem; color: #fff; margin-bottom: 10px; }
+  .tier p  { font-size: 0.88rem; color: #94a3b8; margin-bottom: 10px; }
+
+  /* ─── WORKFLOW ─── */
+  .workflow { display: flex; flex-direction: column; gap: 0; }
+
+  .wf-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    position: relative;
+  }
+
+  .wf-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 18px; top: 40px;
+    width: 2px;
+    height: calc(100% + 8px);
+    background: linear-gradient(180deg, var(--accent), var(--accent2));
+    opacity: 0.3;
+  }
+
+  .wf-num {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--surface2);
+    border: 2px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .wf-content {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 8px;
+    flex: 1;
+    transition: border-color 0.2s;
+  }
+
+  .wf-content:hover { border-color: rgba(0,212,255,0.2); }
+
+  .wf-content h4 { font-size: 0.95rem; color: #fff; margin-bottom: 4px; }
+  .wf-content p  { font-size: 0.85rem; color: var(--muted); }
+
+  /* ─── TOOLS ─── */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+  }
+
+  .tool-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .tool-card:hover { border-color: rgba(0,212,255,0.3); background: var(--surface2); }
+
+  .tool-icon { font-size: 1.6rem; margin-bottom: 8px; }
+  .tool-name { font-size: 0.9rem; font-weight: 700; color: #fff; }
+  .tool-desc { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+
+  /* ─── PILLARS ─── */
+  .pillars { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+  @media(max-width:600px){ .pillars { grid-template-columns: 1fr; } }
+
+  .pillar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 16px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .pillar:hover { transform: translateY(-3px); }
+
+  .pillar-icon { font-size: 2rem; margin-bottom: 10px; }
+  .pillar h4  { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  .pillar p   { font-size: 0.83rem; color: var(--muted); }
+
+  .pillar-people  { border-top: 3px solid var(--accent3); }
+  .pillar-process { border-top: 3px solid var(--accent); }
+  .pillar-tech    { border-top: 3px solid var(--accent2); }
+
+  /* ─── CALLOUT ─── */
+  .callout {
+    display: flex;
+    gap: 14px;
+    background: rgba(0,212,255,0.04);
+    border: 1px solid rgba(0,212,255,0.15);
+    border-radius: 10px;
+    padding: 18px;
+    margin: 16px 0;
+  }
+
+  .callout-icon { font-size: 1.3rem; flex-shrink: 0; }
+  .callout p    { font-size: 0.88rem; color: #94a3b8; }
+  .callout strong { color: var(--accent); }
+
+  /* ─── DETECTION TYPES ─── */
+  .detect-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media(max-width:600px){ .detect-grid { grid-template-columns: 1fr; } }
+
+  .detect-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+
+  .detect-card .icon { font-size: 1.1rem; margin-bottom: 8px; }
+  .detect-card h4 { font-size: 0.9rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .detect-card p  { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    text-align: center;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  footer span { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-badge"><div class="dot"></div> Cybersecurity Notes</div>
+    <h1>SOC Introduction</h1>
+    <p class="subtitle">Security Operations Center — Complete Notes</p>
+
+  </header>
+
+  <div class="divider"></div>
+
+  <!-- SECTION 1: WHAT IS SOC -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-blue">🛡️</div>
+      <div>
+        <span class="section-num">01 — DEFINITION</span>
+        <div class="section-title">What is a SOC?</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Security Operations Center <span class="badge badge-blue">CORE CONCEPT</span></div>
+      <p>A <strong style="color:#e2e8f0">SOC (Security Operations Center)</strong> is a centralized, dedicated facility operated by a specialized security team that <strong style="color:#e2e8f0">continuously monitors an organization's network and all its resources</strong> to identify suspicious activity and prevent damage. This team operates <strong style="color:#00d4ff">24/7/365</strong> — never sleeping, never stopping.</p>
+    </div>
+
+    <div class="callout">
+      <div class="callout-icon">💡</div>
+      <p>Modern-day threats target <strong>digital assets</strong> — confidential data stored in networks and systems. Threat actors discover and exploit new vulnerabilities daily. Traditional security alone is not enough, which is why a dedicated SOC team is essential.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">What Does the SOC Protect?</div>
+      <ul class="check-list">
+        <li><strong>Network</strong> — all traffic and communications</li>
+        <li><strong>Systems & Servers</strong> — operating systems, databases, endpoints</li>
+        <li><strong>Applications</strong> — web apps, internal software</li>
+        <li><strong>Data</strong> — confidential records, credentials, secrets</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 2: WHY SOC -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-red">⚠️</div>
+      <div>
+        <span class="section-num">02 — IMPORTANCE</span>
+        <div class="section-title">Why is SOC Important?</div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">Industries That Need SOC</div>
+        <ul class="check-list">
+          <li>🏦 <strong>Banks</strong> — financial data</li>
+          <li>🏥 <strong>Hospitals</strong> — patient records</li>
+          <li>🏛️ <strong>Government</strong> — national security</li>
+          <li>💻 <strong>IT Companies</strong> — intellectual property</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Impact of Compromise</div>
+        <ul class="check-list">
+          <li>💥 <strong>Data Breaches</strong></li>
+          <li>💸 <strong>Financial Loss</strong></li>
+          <li>📉 <strong>Reputation Damage</strong></li>
+          <li>🚫 <strong>Business Disruption</strong></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: DETECT & RESPOND -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-green">🔍</div>
+      <div>
+        <span class="section-num">03 — CORE MISSION</span>
+        <div class="section-title">Detection & Response</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-icon">🎯</div>
+      <p>The main focus of the SOC is keeping <strong>Detection</strong> and <strong>Response</strong> intact, using security solutions that integrate across the entire company's network for centralized monitoring.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">4 Types of Detection</div>
+      <div class="detect-grid" style="margin-top:10px">
+        <div class="detect-card">
+          <div class="icon">🔓</div>
+          <h4>Vulnerability Detection</h4>
+          <p>Identifying weaknesses in software or systems before attackers do — e.g. unpatched Windows systems.</p>
+        </div>
+        <div class="detect-card">
+          <div class="icon">👤</div>
+          <h4>Unauthorized Activity</h4>
+          <p>Spotting stolen credentials in use — e.g. login from an unusual geographic location.</p>
+        </div>
+        <div class="detect-card">
+          <div class="icon">📋</div>
+          <h4>Policy Violations</h4>
+          <p>Detecting rule breaches — e.g. downloading pirated media or sending company files insecurely.</p>
+        </div>
+        <div class="detect-card">
+          <div class="icon">🕵️</div>
+          <h4>Intrusions</h4>
+          <p>Catching unauthorized access — e.g. attacker exploiting a web application or user visiting a malicious site.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">3 Main Responsibilities</div>
+      <ul class="check-list" style="margin-top:6px">
+        <li><strong>Threat Detection</strong> — Identifying suspicious or malicious activity: failed logins, suspicious IPs, malware signals.</li>
+        <li><strong>Attack Analysis</strong> — Investigating the source, affected systems, attack type, and organizational impact.</li>
+        <li><strong>Incident Response</strong> — Taking action: blocking malicious IPs, isolating infected systems, removing malware, restoring systems.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 4: THREE PILLARS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-purple">🏛️</div>
+      <div>
+        <span class="section-num">04 — FOUNDATION</span>
+        <div class="section-title">3 Pillars of a Mature SOC</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-icon">📌</div>
+      <p>A SOC team matures and efficiently detects/responds to incidents only when all three pillars — <strong>People, Process, and Technology</strong> — work together.</p>
+    </div>
+
+    <div class="pillars">
+      <div class="pillar pillar-people">
+        <div class="pillar-icon">👥</div>
+        <h4>People</h4>
+        <p>Skilled analysts (L1, L2, L3) who monitor, investigate, and respond to threats. The human element is irreplaceable.</p>
+      </div>
+      <div class="pillar pillar-process">
+        <div class="pillar-icon">⚙️</div>
+        <h4>Process</h4>
+        <p>Defined workflows and procedures for triage, escalation, and incident response that ensure consistent action.</p>
+      </div>
+      <div class="pillar pillar-tech">
+        <div class="pillar-icon">💻</div>
+        <h4>Technology</h4>
+        <p>SIEM platforms, firewalls, and detection tools that collect, analyze, and alert on security events.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: TEAM STRUCTURE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-amber">🏆</div>
+      <div>
+        <span class="section-num">05 — TEAM STRUCTURE</span>
+        <div class="section-title">SOC Analyst Tiers</div>
+      </div>
+    </div>
+
+    <div class="tier tier-l1">
+      <div class="tier-label">Tier 1 · First Line of Defense</div>
+      <h4>SOC L1 Analyst</h4>
+      <p>The first responders to alerts. They review incoming security events, perform initial triage, and escalate confirmed threats upward.</p>
+      <ul class="check-list">
+        <li>Monitor and review SIEM alerts</li>
+        <li>Review logs and events</li>
+        <li>Distinguish real threats from false positives</li>
+        <li>Escalate serious alerts to L2</li>
+      </ul>
+      <div class="callout" style="margin-top:12px;margin-bottom:0;padding:12px">
+        <div class="callout-icon" style="font-size:1rem">📌</div>
+        <p style="font-size:0.82rem"><strong>Example:</strong> SIEM generates an alert for multiple failed login attempts → L1 analyst reviews it first to confirm if it's a real brute-force attempt or a false alarm.</p>
+      </div>
+    </div>
+
+    <div class="tier tier-l2">
+      <div class="tier-label">Tier 2 · Deep Investigation</div>
+      <h4>SOC L2 Analyst</h4>
+      <p>Handles escalated alerts. Goes deeper into the investigation — finding root causes and applying containment measures.</p>
+      <ul class="check-list">
+        <li>Investigate escalated alerts in detail</li>
+        <li>Identify the root cause of incidents</li>
+        <li>Contain and mitigate active threats</li>
+        <li>Provide remediation recommendations</li>
+      </ul>
+      <div class="callout" style="margin-top:12px;margin-bottom:0;padding:12px">
+        <div class="callout-icon" style="font-size:1rem">📌</div>
+        <p style="font-size:0.82rem"><strong>Example:</strong> Brute-force attack detected → L2 analyst traces attacker IP addresses and applies firewall rules to block them.</p>
+      </div>
+    </div>
+
+    <div class="tier tier-l3">
+      <div class="tier-label">Tier 3 · Expert Threat Hunters</div>
+      <h4>SOC L3 Analyst</h4>
+      <p>Senior security experts who handle complex, advanced threats and proactively hunt for hidden attackers before alerts fire.</p>
+      <ul class="check-list">
+        <li>Perform proactive <strong>threat hunting</strong></li>
+        <li>Handle complex and novel incidents</li>
+        <li>Develop new detection rules and signatures</li>
+        <li>Improve tools, strategies, and playbooks</li>
+      </ul>
+      <div class="callout" style="margin-top:12px;margin-bottom:0;padding:12px">
+        <div class="callout-icon" style="font-size:1rem">📌</div>
+        <p style="font-size:0.82rem"><strong>Example:</strong> New malware variant appears → L3 analyst studies its behavior, reverse-engineers it, and creates detection rules to catch future infections.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: TOOLS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-blue">🔧</div>
+      <div>
+        <span class="section-num">06 — TECHNOLOGY</span>
+        <div class="section-title">SOC Tools & SIEM</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">What is SIEM? <span class="badge badge-blue">KEY TOOL</span></div>
+      <p><strong style="color:#e2e8f0">SIEM (Security Information and Event Management)</strong> is the central platform of any SOC. It collects logs from all systems, correlates events, detects suspicious patterns, and generates alerts for analysts to investigate.</p>
+    </div>
+
+    <div class="tools-grid">
+      <div class="tool-card">
+        <div class="tool-icon">🟠</div>
+        <div class="tool-name">Splunk</div>
+        <div class="tool-desc">Industry-leading SIEM for log analysis & dashboards</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🔵</div>
+        <div class="tool-name">IBM QRadar</div>
+        <div class="tool-desc">Enterprise SIEM with advanced threat intelligence</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🟢</div>
+        <div class="tool-name">Firewalls</div>
+        <div class="tool-desc">Network boundary defense, log source</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">🟣</div>
+        <div class="tool-name">Endpoint Tools</div>
+        <div class="tool-desc">EDR/AV — host-level threat detection</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <div class="card-title">What SIEM Does</div>
+      <ul class="check-list">
+        <li><strong>Log Collection</strong> — Gathers logs from firewalls, servers, endpoints, network devices</li>
+        <li><strong>Log Storage & Correlation</strong> — Stores and correlates events across all sources</li>
+        <li><strong>Pattern Detection</strong> — Automatically detects anomalies and suspicious patterns</li>
+        <li><strong>Alert Generation</strong> — Fires alerts for failed logins, malware activity, suspicious IPs</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 7: WORKFLOW -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-green">🔄</div>
+      <div>
+        <span class="section-num">07 — WORKFLOW</span>
+        <div class="section-title">SOC Workflow: Logs → Resolution</div>
+      </div>
+    </div>
+
+    <div class="workflow">
+      <div class="wf-step">
+        <div class="wf-num">01</div>
+        <div class="wf-content">
+          <h4>Log Generation</h4>
+          <p>Every activity across systems produces logs — user logins, file access, network connections, application events. Sources include firewalls, servers, endpoints, and network devices.</p>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">02</div>
+        <div class="wf-content">
+          <h4>Log Ingestion into SIEM</h4>
+          <p>All logs are collected and ingested into the SIEM platform (e.g. Splunk). The SIEM stores, normalizes, and analyzes all events from a centralized location.</p>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">03</div>
+        <div class="wf-content">
+          <h4>Alert Generation</h4>
+          <p>When the SIEM detects suspicious patterns it fires an alert — multiple failed logins, suspicious IP activity, malware signatures, policy violations.</p>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">04</div>
+        <div class="wf-content">
+          <h4>L1 Analyst Investigation</h4>
+          <p>The L1 analyst reviews the alert to determine if it is a genuine threat or a false positive. Initial triage happens here.</p>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">05</div>
+        <div class="wf-content">
+          <h4>L2 Analyst Deep Analysis</h4>
+          <p>If confirmed serious, the alert is escalated to L2 for deeper investigation — root cause analysis, attacker profiling, impact assessment.</p>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">06</div>
+        <div class="wf-content">
+          <h4>Incident Response</h4>
+          <p>Attack confirmed → SOC takes action: isolate compromised systems, block malicious IPs, remove malware, recover affected data, restore normal operations.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p style="color:#64748b">Security Operations Center — Complete Notes</p>
+    <p style="margin-top:10px">Made by <span>Rajan Behera</span></p>
+  </footer>
+
+</div>
+</body>
+</html>
